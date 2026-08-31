@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfume Boutique - Pedido</title>
+    <style>
+        *{box-sizing:border-box}
+        body{margin:0;font-family:Arial,sans-serif;background:#f8f1f5;color:#3d3037}
+        .header{background:linear-gradient(135deg,#6d304f,#a45d7e);color:white;padding:35px 20px;text-align:center}
+        .header h1{margin:0;font-family:Georgia,serif;font-size:42px;letter-spacing:2px}
+        .header p{margin:10px 0 0;font-size:16px;letter-spacing:1px}
+        .decoracion{margin:12px auto 0;width:70px;height:3px;background:white;border-radius:10px}
+        .contenedor{width:92%;max-width:900px;margin:35px auto}
+        .bienvenida,.formulario{background:white;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.1)}
+        .bienvenida{padding:28px;text-align:center;margin-bottom:25px}
+        .bienvenida h2,.titulo,.subtitulo{color:#7b3d5b;font-family:Georgia,serif}
+        .bienvenida h2{margin-top:0;font-size:27px}
+        .bienvenida p{color:#777;margin-bottom:0}
+        .formulario{padding:32px}
+        .titulo{text-align:center;margin:0 0 25px}
+        .subtitulo{border-left:4px solid #a45d7e;padding-left:10px;margin-top:25px}
+        label{display:block;margin-top:16px;margin-bottom:7px;font-weight:bold}
+        input[type=text],input[type=number],select{width:100%;padding:13px;border:1px solid #dbcbd3;border-radius:9px;font-size:15px;background:#fff}
+        input:focus,select:focus{outline:none;border-color:#9b5576;box-shadow:0 0 5px rgba(155,85,118,.2)}
+        .productos{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-top:15px}
+        .producto{background:#fffafb;border:1px solid #ead9e1;border-radius:14px;padding:20px;transition:.3s}
+        .producto:hover{transform:translateY(-4px);box-shadow:0 7px 16px rgba(0,0,0,.1);border-color:#b36b89}
+        .producto label{margin:0;cursor:pointer}
+        .producto input,.extras input,.entrega input{accent-color:#8e4b6b;margin-right:7px}
+        .perfume-nombre{display:block;color:#783c58;font-family:Georgia,serif;font-size:18px;margin-top:10px}
+        .precio{display:block;margin-top:8px;font-weight:bold;color:#a45d7e;font-size:17px}
+        .extras,.entrega{background:#fffafb;border:1px solid #ead9e1;border-radius:12px;padding:18px}
+        .extras label,.entrega label{font-weight:normal;margin-top:9px;cursor:pointer}
+        .boton{width:100%;margin-top:30px;padding:16px;border:0;border-radius:10px;background:linear-gradient(135deg,#7b3d5b,#a45d7e);color:white;font-size:17px;font-weight:bold;cursor:pointer;transition:.3s}
+        .boton:hover{transform:translateY(-2px);box-shadow:0 5px 12px rgba(0,0,0,.18)}
+        .pie{text-align:center;color:#888;font-size:13px;margin:25px 0}
+        .error{display:none;background:#ffe5eb;color:#8b2948;padding:12px;border-radius:9px;margin-top:15px;text-align:center}
+        @media(max-width:600px){.productos{grid-template-columns:1fr}.formulario{padding:22px}.header h1{font-size:32px}}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Perfume Boutique</h1>
+        <p>Encuentra el aroma que representa tu estilo</p>
+        <div class="decoracion"></div>
+    </div>
+
+    <div class="contenedor">
+        <div class="bienvenida">
+            <h2>Tu aroma, tu esencia</h2>
+            <p>Crea tu pedido seleccionando uno o varios perfumes, extras y método de entrega.</p>
+        </div>
+
+        <div class="formulario">
+            <h2 class="titulo">Realiza tu pedido</h2>
+
+            <form id="formularioPedido">
+                <h3 class="subtitulo">Información del cliente</h3>
+
+                <label for="nombre">Nombre del cliente:</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Escribe tu nombre" required>
+
+                <label for="tipo_cliente">Tipo de cliente:</label>
+                <select id="tipo_cliente" name="tipo_cliente" required>
+                    <option value="">-- Selecciona una opción --</option>
+                    <option value="Normal">Cliente Normal</option>
+                    <option value="Estudiante">Estudiante</option>
+                </select>
+
+                <h3 class="subtitulo">Elige tus perfumes</h3>
+                <div class="productos">
+                    <div class="producto">
+                        <label>
+                            <input type="checkbox" name="perfumes" value="Ariana Grande Cloud" data-precio="120">
+                            <span class="perfume-nombre">Ariana Grande Cloud</span>
+                            <span class="precio">$120.00</span>
+                        </label>
+                    </div>
+                    <div class="producto">
+                        <label>
+                            <input type="checkbox" name="perfumes" value="YSL Libre" data-precio="95">
+                            <span class="perfume-nombre">YSL Libre</span>
+                            <span class="precio">$95.00</span>
+                        </label>
+                    </div>
+                    <div class="producto">
+                        <label>
+                            <input type="checkbox" name="perfumes" value="Good Girl" data-precio="80">
+                            <span class="perfume-nombre">Good Girl</span>
+                            <span class="precio">$80.00</span>
+                        </label>
+                    </div>
+                    <div class="producto">
+                        <label>
+                            <input type="checkbox" name="perfumes" value="Valentino Born in Roma" data-precio="109">
+                            <span class="perfume-nombre">Valentino Born in Roma</span>
+                            <span class="precio">$109.00</span>
+                        </label>
+                    </div>
+                </div>
+
+                <label for="cantidad">Cantidad de cada perfume:</label>
+                <input type="number" id="cantidad" name="cantidad" min="1" max="20" value="1" required>
+
+                <h3 class="subtitulo">Extras</h3>
+                <div class="extras">
+                    <label><input type="checkbox" name="extras" value="Empaque de regalo" data-precio="3">Empaque de regalo - $3.00</label>
+                    <label><input type="checkbox" name="extras" value="Tarjeta personalizada" data-precio="2">Tarjeta personalizada - $2.00</label>
+                    <label><input type="checkbox" name="extras" value="Bolsa premium" data-precio="4">Bolsa premium - $4.00</label>
+                </div>
+
+                <h3 class="subtitulo">Método de entrega</h3>
+                <div class="entrega">
+                    <label><input type="radio" name="entrega" value="Recoger en tienda" required>Recoger en tienda - Gratis</label>
+                    <label><input type="radio" name="entrega" value="Domicilio">Domicilio - $4.00 o gratis si el pedido supera $50</label>
+                    <label><input type="radio" name="entrega" value="Express">Express - $7.00</label>
+                </div>
+
+                <div id="error" class="error">Debes seleccionar al menos un perfume.</div>
+                <button type="submit" class="boton">✦ Confirmar mi pedido ✦</button>
+            </form>
+        </div>
+
+        <div class="pie">Perfume Boutique | Elegancia en cada aroma</div>
+    </div>
+
+    <script>
+        document.getElementById("formularioPedido").addEventListener("submit", function(event){
+            event.preventDefault();
+
+            const perfumes = [...document.querySelectorAll('input[name="perfumes"]:checked')];
+            const extras = [...document.querySelectorAll('input[name="extras"]:checked')];
+            const entrega = document.querySelector('input[name="entrega"]:checked');
+
+            if(perfumes.length === 0){
+                document.getElementById("error").style.display = "block";
+                return;
+            }
+
+            const datos = {
+                nombre: document.getElementById("nombre").value.trim(),
+                tipo_cliente: document.getElementById("tipo_cliente").value,
+                cantidad: Number(document.getElementById("cantidad").value),
+                perfumes: perfumes.map(p => ({nombre:p.value, precio:Number(p.dataset.precio)})),
+                extras: extras.map(e => ({nombre:e.value, precio:Number(e.dataset.precio)})),
+                entrega: entrega.value
+            };
+
+            sessionStorage.setItem("pedidoPerfumeBoutique", JSON.stringify(datos));
+            window.location.href = "MiproyectoFinal2.html";
+        });
+    </script>
+</body>
+</html>
