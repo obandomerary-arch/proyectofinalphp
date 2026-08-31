@@ -1,0 +1,582 @@
+```php
+<?php
+
+// RECIBIR LOS DATOS
+
+$nombre = $_POST["nombre"] ?? "";
+$tipo_cliente = $_POST["tipo_cliente"] ?? "";
+$perfumes = $_POST["perfumes"] ?? [];
+$cantidad = $_POST["cantidad"] ?? 0;
+$extras = $_POST["extras"] ?? [];
+$entrega = $_POST["entrega"] ?? [];
+
+
+// VALIDACION
+
+if (
+    empty($nombre) ||
+    empty($tipo_cliente) ||
+    empty($perfumes) ||
+    empty($cantidad) ||
+    empty($entrega)
+) {
+
+    echo "<h2>Error</h2>";
+    echo "<p>Debes completar todos los campos principales.</p>";
+    echo "<a href='index.php'>Volver al formulario</a>";
+
+    exit;
+}
+
+
+// PRECIOS
+
+$precios = [
+
+    "Ariana Grande Cloud" => 35,
+    "YSL Libre" => 45,
+    "Good Girl" => 50,
+    "Valentino Born in Roma" => 55
+
+];
+
+
+// CALCULO DEL SUBTOTAL
+
+$subtotal = 0;
+
+foreach ($perfumes as $perfume) {
+
+    if (isset($precios[$perfume])) {
+
+        $subtotal =
+            $subtotal +
+            ($precios[$perfume] * $cantidad);
+
+    }
+
+}
+
+
+// CALCULO DE EXTRAS
+
+$total_extras = 0;
+
+foreach ($extras as $extra) {
+
+    if ($extra == "Empaque de regalo") {
+
+        $total_extras = $total_extras + 3;
+
+    } elseif ($extra == "Tarjeta personalizada") {
+
+        $total_extras = $total_extras + 2;
+
+    } elseif ($extra == "Bolsa premium") {
+
+        $total_extras = $total_extras + 4;
+
+    }
+
+}
+
+
+// SUBTOTAL CON EXTRAS
+
+$subtotal_con_extras =
+    $subtotal + $total_extras;
+
+
+// DESCUENTO POR CANTIDAD
+
+$descuento_cantidad = 0;
+
+if ($cantidad >= 3) {
+
+    $descuento_cantidad =
+        $subtotal_con_extras * 0.10;
+
+}
+
+
+// DESCUENTO ESTUDIANTE
+
+$descuento_estudiante = 0;
+
+if ($tipo_cliente == "Estudiante") {
+
+    $descuento_estudiante =
+        $subtotal_con_extras * 0.05;
+
+}
+
+
+// TOTAL DESCUENTOS
+
+$total_descuentos =
+    $descuento_cantidad +
+    $descuento_estudiante;
+
+
+// TOTAL CON DESCUENTOS
+
+$total_con_descuentos =
+    $subtotal_con_extras -
+    $total_descuentos;
+
+
+// ENTREGA
+
+$costo_entrega = 0;
+
+if ($entrega == "Express") {
+
+    $costo_entrega = 7;
+
+} elseif ($entrega == "Domicilio") {
+
+    if ($total_con_descuentos > 50) {
+
+        $costo_entrega = 0;
+
+    } else {
+
+        $costo_entrega = 4;
+
+    }
+
+} else {
+
+    $costo_entrega = 0;
+
+}
+
+
+// TOTAL FINAL
+
+$total_pagar =
+    $total_con_descuentos +
+    $costo_entrega;
+
+?>
+
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Resumen del Pedido</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f8f1f5;
+            color: #3d3037;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6d304f, #a45d7e);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-family: Georgia, serif;
+            font-size: 36px;
+        }
+
+        .header p {
+            margin-bottom: 0;
+        }
+
+        .contenedor {
+            width: 92%;
+            max-width: 750px;
+            margin: 35px auto;
+        }
+
+        .ticket {
+            background: white;
+            border-radius: 18px;
+            padding: 32px;
+            box-shadow: 0 7px 22px rgba(0,0,0,0.10);
+        }
+
+        .titulo {
+            text-align: center;
+            color: #7b3d5b;
+            font-family: Georgia, serif;
+            font-size: 27px;
+            margin-top: 0;
+        }
+
+        .mensaje {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        .dato {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dato strong {
+            color: #7b3d5b;
+        }
+
+        .seccion {
+            margin-top: 25px;
+            padding: 18px;
+            background: #fff9fb;
+            border: 1px solid #ead9e1;
+            border-radius: 12px;
+        }
+
+        .seccion h3 {
+            margin-top: 0;
+            color: #7b3d5b;
+            font-family: Georgia, serif;
+        }
+
+        .seccion ul {
+            margin-bottom: 0;
+            line-height: 1.8;
+        }
+
+        .descuento {
+            color: #a33b5d;
+        }
+
+        .entrega-gratis {
+            color: #5c876c;
+            font-weight: bold;
+        }
+
+        .total {
+            margin-top: 25px;
+            background: linear-gradient(135deg, #7b3d5b, #a45d7e);
+            color: white;
+            padding: 22px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .gracias {
+            text-align: center;
+            margin-top: 25px;
+            color: #777;
+        }
+
+        .volver {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #7b3d5b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .volver:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="header">
+
+        <h1>Perfume Boutique</h1>
+
+        <p>Gracias por elegirnos</p>
+
+    </div>
+
+
+    <div class="contenedor">
+
+        <div class="ticket">
+
+            <h2 class="titulo">
+                ✦ Resumen de tu pedido ✦
+            </h2>
+
+            <p class="mensaje">
+                Estos son los detalles de tu compra.
+            </p>
+
+
+            <div class="dato">
+
+                <strong>Cliente</strong>
+
+                <span>
+                    <?php echo htmlspecialchars($nombre); ?>
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>Tipo de cliente</strong>
+
+                <span>
+                    <?php echo htmlspecialchars($tipo_cliente); ?>
+                </span>
+
+            </div>
+
+
+            <div class="seccion">
+
+                <h3>Perfumes seleccionados</h3>
+
+                <ul>
+
+                    <?php foreach ($perfumes as $perfume): ?>
+
+                        <li>
+
+                            <?php echo htmlspecialchars($perfume); ?>
+
+                            -
+
+                            $<?php
+                            echo number_format(
+                                $precios[$perfume],
+                                2
+                            );
+                            ?>
+
+                            x
+
+                            <?php echo $cantidad; ?>
+
+                        </li>
+
+                    <?php endforeach; ?>
+
+                </ul>
+
+            </div>
+
+
+            <div class="seccion">
+
+                <h3>Extras</h3>
+
+                <?php
+
+                if (count($extras) > 0) {
+
+                    echo "<ul>";
+
+                    foreach ($extras as $extra) {
+
+                        echo "<li>";
+                        echo htmlspecialchars($extra);
+                        echo "</li>";
+
+                    }
+
+                    echo "</ul>";
+
+                } else {
+
+                    echo "No se seleccionaron extras.";
+
+                }
+
+                ?>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>Método de entrega</strong>
+
+                <span>
+                    <?php echo htmlspecialchars($entrega); ?>
+                </span>
+
+            </div>
+
+
+            <br>
+
+
+            <div class="dato">
+
+                <strong>Subtotal</strong>
+
+                <span>
+                    $<?php
+                    echo number_format(
+                        $subtotal,
+                        2
+                    );
+                    ?>
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>Extras</strong>
+
+                <span>
+                    $<?php
+                    echo number_format(
+                        $total_extras,
+                        2
+                    );
+                    ?>
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>Subtotal con extras</strong>
+
+                <span>
+                    $<?php
+                    echo number_format(
+                        $subtotal_con_extras,
+                        2
+                    );
+                    ?>
+                </span>
+
+            </div>
+
+
+            <div class="dato descuento">
+
+                <strong>
+                    Descuento por cantidad
+                </strong>
+
+                <span>
+                    -$<?php
+                    echo number_format(
+                        $descuento_cantidad,
+                        2
+                    );
+                    ?>
+                </span>
+
+            </div>
+
+
+            <div class="dato descuento">
+
+                <strong>
+                    Descuento estudiante
+                </strong>
+
+                <span>
+                    -$<?php
+                    echo number_format(
+                        $descuento_estudiante,
+                        2
+                    );
+                    ?>
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>Entrega</strong>
+
+                <span>
+
+                    <?php
+
+                    if ($costo_entrega == 0) {
+
+                        echo "<span class='entrega-gratis'>";
+                        echo "Gratis";
+                        echo "</span>";
+
+                    } else {
+
+                        echo "$";
+                        echo number_format(
+                            $costo_entrega,
+                            2
+                        );
+
+                    }
+
+                    ?>
+
+                </span>
+
+            </div>
+
+
+            <div class="total">
+
+                TOTAL A PAGAR
+
+                <br>
+
+                $<?php
+                echo number_format(
+                    $total_pagar,
+                    2
+                );
+                ?>
+
+            </div>
+
+
+            <p class="gracias">
+
+                Gracias por comprar en
+                <strong>Perfume Boutique</strong>.
+
+            </p>
+
+
+            <a
+                href="index.php"
+                class="volver"
+            >
+
+                ← Realizar otro pedido
+
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+```
